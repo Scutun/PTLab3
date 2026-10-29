@@ -47,8 +47,17 @@ jobs:
           python manage.py makemigrations --check --dry-run
       - name: Run tests
         run: |
-          coverage run manage.py test shop
-          coverage report
+          coverage run manage.py test shop --verbosity 2
+      - name: Coverage report
+        run: |
+          coverage report --fail-under=100
+          coverage html
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov/
 
   deploy:
     needs: test
